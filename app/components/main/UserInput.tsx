@@ -1,17 +1,21 @@
 "use client";
 import { useState } from "react";
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
+import { useContext } from "react";
+import { MessageContext } from "../../context/MessageContext";
+import { MessageContextType } from "../../utils/interfaces";
 
-const UserInput = ({
-  setMessages,
-}: {
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-}) => {
+const UserInput = () => {
   const [prompt, setPrompt] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const messageContext = useContext<MessageContextType | null>(MessageContext);
+
+  //Check if context is provided
+  if (!messageContext) {
+    return <div>Context not provided</div>;
+  }
+
+  const { setMessages } = messageContext;
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,8 +33,6 @@ const UserInput = ({
       body: JSON.stringify({ prompt }),
     });
 
-    console.log("response: ", response);
-
     const result = await response.json();
 
     setMessages((prevState) => [
@@ -39,8 +41,6 @@ const UserInput = ({
     ]);
 
     setIsLoading(false);
-    console.log(result);
-    console.log("done ");
   };
 
   return (

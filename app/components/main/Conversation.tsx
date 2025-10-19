@@ -1,11 +1,16 @@
-import React from "react";
+import { useContext } from "react";
+import { MessageContext } from "../../context/MessageContext";
+import { MessageContextType } from "../../utils/interfaces";
 
-type ChatMessage = {
-  role: "user" | "assistant";
-  content: string;
-};
+const Conversation = () => {
+  const messageContext = useContext<MessageContextType | null>(MessageContext);
 
-const Conversation = ({ messages }: { messages: ChatMessage[] }) => {
+  //Check if context is provided
+  if (!messageContext) {
+    return <div>Context not provided</div>;
+  }
+
+  const { messages } = messageContext;
   console.log("current MEssages: ", messages);
   return (
     <div>
