@@ -8,7 +8,6 @@ export async function POST(req: Request) {
   const result = await client.responses.create({
     model: "gpt-5-nano",
     input,
-    max_output_tokens: 1000,
     stream: true,
   });
 

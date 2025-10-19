@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { IncomingMessageContext } from "../../context/IncomingMessageContext";
 import {
@@ -21,7 +21,6 @@ const Conversation = () => {
 
   const { incomingMessage } = incomingMessageContext || {};
   const { messages } = messageContext;
-  console.log("current MEssages: ", messages);
   return (
     <div>
       {messages.map((message, index) => (
@@ -37,4 +36,4 @@ const Conversation = () => {
   );
 };
 
-export default Conversation;
+export default memo(Conversation);

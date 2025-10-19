@@ -1,5 +1,5 @@
 // Context.js
-import { createContext, useState } from "react";
+import { createContext, useState, memo } from "react";
 import { IncomingMessageContextType } from "../utils/interfaces";
 export const IncomingMessageContext =
   createContext<IncomingMessageContextType | null>(null);
@@ -20,4 +20,4 @@ const IncomingMessageProvider = ({
   );
 };
 
-export default IncomingMessageProvider;
+export default memo(IncomingMessageProvider);

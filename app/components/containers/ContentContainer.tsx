@@ -1,5 +1,6 @@
 import WelcomeMessage from "../main/WelcomeMessage";
 import Conversation from "../main/Conversation";
+import { memo } from "react";
 
 const ContentContainer = () => {
   return (
@@ -11,4 +12,4 @@ const ContentContainer = () => {
   );
 };
 
-export default ContentContainer;
+export default memo(ContentContainer);

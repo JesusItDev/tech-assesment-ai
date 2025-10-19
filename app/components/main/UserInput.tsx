@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useContext } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { IncomingMessageContext } from "../../context/IncomingMessageContext";
@@ -101,4 +101,4 @@ const UserInput = () => {
   );
 };
 
-export default UserInput;
+export default memo(UserInput);
