@@ -7,7 +7,13 @@ export interface MessageContextType {
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 }
+
 export interface IncomingMessageContextType {
   incomingMessage: string;
   setIncomingMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface LoadingContextType {
+  loadingState: boolean;
+  setLoadingState: React.Dispatch<React.SetStateAction<boolean>>;
 }
