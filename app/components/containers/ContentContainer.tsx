@@ -1,12 +1,17 @@
 import WelcomeMessage from "../main/WelcomeMessage";
 import Conversation from "../main/Conversation";
 
-const ContentContainer = () => {
-  const conversation = false;
+type ChatMessage = {
+  role: "user" | "assistant";
+  content: string;
+};
 
+const ContentContainer = ({ messages }: { messages: ChatMessage[] }) => {
   return (
     <div className="flex-9 w-5/6">
-      {!conversation ? <WelcomeMessage /> : <Conversation />}
+      <WelcomeMessage />
+
+      <Conversation messages={messages} />
     </div>
   );
 };
