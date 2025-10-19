@@ -9,8 +9,11 @@ import {
   IncomingMessageContextType,
   LoadingContextType,
 } from "../../utils/interfaces";
+import ErrorModal from "./ErrorModal";
 
 const UserInput = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const [prompt, setPrompt] = useState<string>("");
 
   const messageContext = useContext<MessageContextType | null>(MessageContext);
@@ -37,9 +40,8 @@ const UserInput = () => {
   const { loadingState, setLoadingState } = loadingContext || {};
 
   const handleSubmit = async (event: React.FormEvent) => {
-    if (prompt.trim() === "") return;
-
     event.preventDefault();
+    if (prompt.trim() === "") return;
 
     setLoadingState(true);
 
@@ -109,7 +111,16 @@ const UserInput = () => {
       >
         Submit
       </button>
-      <button className="p-2 bg-warning w-1/12 rounded-xl">Clear</button>
+      <button
+        className="p-2 bg-warning w-1/12 rounded-xl"
+        onClick={() => setIsModalOpen(true)}
+      >
+        Clear
+      </button>
+      <ErrorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <h3>An error as occurred</h3>
+        <p>Plese try to re enter your prompt.</p>
+      </ErrorModal>
     </form>
   );
 };
