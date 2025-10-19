@@ -7,6 +7,7 @@ import {
   IncomingMessageContextType,
   LoadingContextType,
 } from "../../utils/interfaces";
+import Loading from "./Loading";
 import ChatMessageItem from "./ChatMessageItem";
 
 const Conversation = () => {
@@ -38,10 +39,14 @@ const Conversation = () => {
         <ChatMessageItem key={index} message={message} />
       ))}
 
-      {incomingMessage && (
-        <ChatMessageItem
-          message={{ role: "assistant", content: incomingMessage }}
-        />
+      {loadingState ? (
+        <Loading />
+      ) : (
+        incomingMessage && (
+          <ChatMessageItem
+            message={{ role: "assistant", content: incomingMessage }}
+          />
+        )
       )}
     </div>
   );
