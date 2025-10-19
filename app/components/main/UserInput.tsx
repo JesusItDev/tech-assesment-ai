@@ -89,6 +89,8 @@ const UserInput = () => {
         }
       }
     } catch (error) {
+      setIsModalOpen(true);
+      setLoadingState(false);
       console.error(error);
     }
   };
