@@ -2,14 +2,17 @@
 import ContentContainer from "./components/containers/ContentContainer";
 import UserInputContainer from "./components/containers/UserInputContainer";
 import MessageProvider from "./context/MessageContext";
+import IncomingMessageProvider from "./context/IncomingMessageContext";
 
 export default function Home() {
   return (
-    <MessageProvider>
-      <div className="flex justify-center items-center h-screen bg-bg-dark flex-col">
-        <ContentContainer />
-        <UserInputContainer />
-      </div>
-    </MessageProvider>
+    <IncomingMessageProvider>
+      <MessageProvider>
+        <div className="flex justify-center items-center h-screen bg-bg-dark flex-col">
+          <ContentContainer />
+          <UserInputContainer />
+        </div>
+      </MessageProvider>
+    </IncomingMessageProvider>
   );
 }
