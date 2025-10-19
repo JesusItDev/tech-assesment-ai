@@ -34,7 +34,7 @@ const Conversation = () => {
   const { incomingMessage } = incomingMessageContext || {};
   const { messages } = messageContext;
   return (
-    <div>
+    <div className="mt-10">
       {messages.map((message, index) => (
         <ChatMessageItem key={index} message={message} />
       ))}
