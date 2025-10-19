@@ -1,8 +1,12 @@
 "use client";
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useContext } from "react";
 import { MessageContext } from "../../context/MessageContext";
-import { MessageContextType } from "../../utils/interfaces";
+import { IncomingMessageContext } from "../../context/IncomingMessageContext";
+import {
+  MessageContextType,
+  IncomingMessageContextType,
+} from "../../utils/interfaces";
 
 const UserInput = () => {
   const [prompt, setPrompt] = useState<string>("");
@@ -10,12 +14,21 @@ const UserInput = () => {
 
   const messageContext = useContext<MessageContextType | null>(MessageContext);
 
+  const incomingMessageContext = useContext<IncomingMessageContextType | null>(
+    IncomingMessageContext
+  );
+
   //Check if context is provided
   if (!messageContext) {
     return <div>Context not provided</div>;
   }
 
+  if (!incomingMessageContext) {
+    return <div>Context not provided</div>;
+  }
+
   const { setMessages } = messageContext;
+  const { setIncomingMessage } = incomingMessageContext || {};
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -33,14 +46,36 @@ const UserInput = () => {
       body: JSON.stringify({ prompt }),
     });
 
-    const result = await response.json();
+    if (!response.body) return;
 
-    setMessages((prevState) => [
-      ...prevState,
-      { role: "assistant", content: result },
-    ]);
+    const reader = response.body
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
 
-    setIsLoading(false);
+    if (reader) setIsLoading(false);
+
+    let incomingMessage = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        setMessages((prevState) => [
+          ...prevState,
+          { role: "assistant", content: incomingMessage },
+        ]);
+
+        setIncomingMessage("");
+
+        break;
+      }
+
+      if (value) {
+        incomingMessage += value;
+
+        setIncomingMessage(incomingMessage);
+      }
+    }
   };
 
   return (
@@ -66,4 +101,4 @@ const UserInput = () => {
   );
 };
 
-export default UserInput;
+export default memo(UserInput);

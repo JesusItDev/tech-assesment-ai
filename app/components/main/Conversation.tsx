@@ -1,31 +1,39 @@
-import { useContext } from "react";
+import { useContext, memo } from "react";
 import { MessageContext } from "../../context/MessageContext";
-import { MessageContextType } from "../../utils/interfaces";
+import { IncomingMessageContext } from "../../context/IncomingMessageContext";
+import {
+  MessageContextType,
+  IncomingMessageContextType,
+} from "../../utils/interfaces";
+import ChatMessageItem from "./ChatMessageItem";
 
 const Conversation = () => {
   const messageContext = useContext<MessageContextType | null>(MessageContext);
+
+  const incomingMessageContext = useContext<IncomingMessageContextType | null>(
+    IncomingMessageContext
+  );
 
   //Check if context is provided
   if (!messageContext) {
     return <div>Context not provided</div>;
   }
 
+  const { incomingMessage } = incomingMessageContext || {};
   const { messages } = messageContext;
-  console.log("current MEssages: ", messages);
   return (
     <div>
-      {messages.length > 0 ? (
-        messages.map((message, index) => (
-          <div key={index}>
-            <h3>{message.role === "user" ? "User: " : "AI: "}</h3>
-            <p>{message.content}</p>
-          </div>
-        ))
-      ) : (
-        <div>No messages</div>
+      {messages.map((message, index) => (
+        <ChatMessageItem key={index} message={message} />
+      ))}
+
+      {incomingMessage && (
+        <ChatMessageItem
+          message={{ role: "assistant", content: incomingMessage }}
+        />
       )}
     </div>
   );
 };
 
-export default Conversation;
+export default memo(Conversation);
