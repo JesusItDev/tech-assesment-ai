@@ -1,4 +1,4 @@
-// Context.js
+"use client";
 import { createContext, useState } from "react";
 import { ChatMessage, MessageContextType } from "../utils/interfaces";
 export const MessageContext = createContext<MessageContextType | null>(null);

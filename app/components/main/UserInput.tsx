@@ -3,20 +3,21 @@ import { useState, memo } from "react";
 import { useContext } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { IncomingMessageContext } from "../../context/IncomingMessageContext";
+import { LoadingContext } from "../../context/LoadingContext";
 import {
   MessageContextType,
   IncomingMessageContextType,
+  LoadingContextType,
 } from "../../utils/interfaces";
 
 const UserInput = () => {
   const [prompt, setPrompt] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const messageContext = useContext<MessageContextType | null>(MessageContext);
-
   const incomingMessageContext = useContext<IncomingMessageContextType | null>(
     IncomingMessageContext
   );
+  const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
 
   //Check if context is provided
   if (!messageContext) {
@@ -27,13 +28,20 @@ const UserInput = () => {
     return <div>Context not provided</div>;
   }
 
+  if (!loadingContext) {
+    return <div>Context not provided</div>;
+  }
+
   const { setMessages } = messageContext;
   const { setIncomingMessage } = incomingMessageContext || {};
+  const { loadingState, setLoadingState } = loadingContext || {};
 
   const handleSubmit = async (event: React.FormEvent) => {
+    if (prompt.trim() === "") return;
+
     event.preventDefault();
 
-    setIsLoading(true);
+    setLoadingState(true);
 
     setMessages((prevState) => [
       ...prevState,
@@ -41,40 +49,45 @@ const UserInput = () => {
     ]);
 
     setPrompt("");
-    const response = await fetch("../../api/chat", {
-      method: "POST",
-      body: JSON.stringify({ prompt }),
-    });
 
-    if (!response.body) return;
+    try {
+      const response = await fetch("../../api/chat", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+      });
 
-    const reader = response.body
-      .pipeThrough(new TextDecoderStream())
-      .getReader();
+      if (!response.body) return;
 
-    if (reader) setIsLoading(false);
+      const reader = response.body
+        .pipeThrough(new TextDecoderStream())
+        .getReader();
 
-    let incomingMessage = "";
+      if (reader) setLoadingState(false);
 
-    while (true) {
-      const { done, value } = await reader.read();
+      let incomingMessage = "";
 
-      if (done) {
-        setMessages((prevState) => [
-          ...prevState,
-          { role: "assistant", content: incomingMessage },
-        ]);
+      while (true) {
+        const { done, value } = await reader.read();
 
-        setIncomingMessage("");
+        if (done) {
+          setMessages((prevState) => [
+            ...prevState,
+            { role: "assistant", content: incomingMessage },
+          ]);
 
-        break;
+          setIncomingMessage("");
+
+          break;
+        }
+
+        if (value) {
+          incomingMessage += value;
+
+          setIncomingMessage(incomingMessage);
+        }
       }
-
-      if (value) {
-        incomingMessage += value;
-
-        setIncomingMessage(incomingMessage);
-      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -90,9 +103,9 @@ const UserInput = () => {
         onChange={(e) => setPrompt(e.target.value)}
       />
       <button
-        className="p-2 bg-primary w-1/12 rounded-xl"
+        className={`p-2 bg-primary w-1/12 rounded-xl ${loadingState && "opacity-50"} `}
         type="submit"
-        disabled={isLoading}
+        disabled={loadingState}
       >
         Submit
       </button>
