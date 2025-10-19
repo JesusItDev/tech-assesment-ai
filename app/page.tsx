@@ -1,11 +1,15 @@
+"use client";
 import ContentContainer from "./components/containers/ContentContainer";
 import UserInputContainer from "./components/containers/UserInputContainer";
+import MessageProvider from "./context/MessageContext";
 
 export default function Home() {
   return (
-    <div className="flex justify-center items-center h-screen bg-bg-dark flex-col">
-      <ContentContainer />
-      <UserInputContainer />
-    </div>
+    <MessageProvider>
+      <div className="flex justify-center items-center h-screen bg-bg-dark flex-col">
+        <ContentContainer />
+        <UserInputContainer />
+      </div>
+    </MessageProvider>
   );
 }
