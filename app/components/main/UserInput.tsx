@@ -89,12 +89,12 @@ const UserInput = () => {
 
   return (
     <form
-      className="flex flex-1 w-5/6 items-center justify-center gap-3 mb-3"
+      className="flex flex-1 w-full items-center justify-center gap-3 my-3"
       onSubmit={handleSubmit}
     >
       <textarea
         placeholder="Input a prompt..."
-        className=" bg-bg-light rounded-xl field-sizing-content max-h-40 w-4/5 p-2 overflow-y-scroll no-scrollbar resize-none"
+        className=" bg-bg-light rounded-xl field-sizing-content max-h-40 w-9/10 p-2 overflow-y-scroll no-scrollbar resize-none"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         onKeyDown={handleKeyDown}
