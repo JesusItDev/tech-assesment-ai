@@ -4,7 +4,7 @@ import { ChatMessage } from "../../utils/interfaces";
 const ChatMessageItem = ({ message }: { message: ChatMessage }) => {
   return (
     <div
-      className={` p-3 w-fit rounded-2xl my-2  ${message.role === "user" ? "bg-primary max-w-4/5 self-end animate-fadeInUp " : "bg-bg-light max-w-4/5"}`}
+      className={` p-3 w-fit rounded-2xl mb-1 bg-bg-light max-w-4/5 animate-fadeInUp `}
     >
       <p className="user-message-text">{message.content}</p>
     </div>

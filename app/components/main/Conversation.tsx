@@ -9,6 +9,7 @@ import {
 } from "../../utils/interfaces";
 import Loading from "./Loading";
 import ChatMessageItem from "./ChatMessageItem";
+import ChatIncomingMessageItem from "./ChatIncomingMessageItem";
 
 const Conversation = () => {
   const messageContext = useContext<MessageContextType | null>(MessageContext);
@@ -16,17 +17,6 @@ const Conversation = () => {
     IncomingMessageContext
   );
   const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
-
-  useEffect(() => {
-    const messageHistory = localStorage.getItem("messages");
-    const setMessages = messageContext?.setMessages;
-
-    if (messageHistory) {
-      if (!setMessages) return;
-      setMessages(JSON.parse(messageHistory));
-    }
-  }, []);
-
   //Check if context is provided
   if (!messageContext) {
     return <div>Context not provided</div>;
@@ -43,8 +33,9 @@ const Conversation = () => {
   const { loadingState } = loadingContext || {};
   const { incomingMessage } = incomingMessageContext || {};
   const { messages } = messageContext;
+
   return (
-    <div className="mt-10">
+    <div className="mt-10 flex flex-col w-full">
       {messages.map((message, index) => (
         <ChatMessageItem key={index} message={message} />
       ))}
@@ -53,7 +44,7 @@ const Conversation = () => {
         <Loading />
       ) : (
         incomingMessage && (
-          <ChatMessageItem
+          <ChatIncomingMessageItem
             message={{ role: "assistant", content: incomingMessage }}
           />
         )
