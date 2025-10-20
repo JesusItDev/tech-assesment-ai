@@ -9,6 +9,7 @@ import {
 } from "../../utils/interfaces";
 import Loading from "./Loading";
 import ChatMessageItem from "./ChatMessageItem";
+import ChatIncomingMessageItem from "./ChatIncomingMessageItem";
 
 const Conversation = () => {
   const messageContext = useContext<MessageContextType | null>(MessageContext);
@@ -43,7 +44,7 @@ const Conversation = () => {
         <Loading />
       ) : (
         incomingMessage && (
-          <ChatMessageItem
+          <ChatIncomingMessageItem
             message={{ role: "assistant", content: incomingMessage }}
           />
         )
