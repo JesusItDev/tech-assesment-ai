@@ -1,5 +1,5 @@
 "use client";
-import { useState, memo } from "react";
+import { useState, memo, useEffect } from "react";
 import { useContext } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { IncomingMessageContext } from "../../context/IncomingMessageContext";
@@ -22,6 +22,13 @@ const UserInput = () => {
   );
   const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
 
+  useEffect(() => {
+    if (messageContext?.messages.length) {
+      console.log("before save", localStorage.getItem("messages"));
+      localStorage.setItem("messages", JSON.stringify(messageContext.messages));
+      console.log("after save", localStorage.getItem("messages"));
+    }
+  }, [messageContext?.messages]);
   //Check if context is provided
   if (!messageContext) {
     return <div>Context not provided</div>;
@@ -88,8 +95,6 @@ const UserInput = () => {
           setIncomingMessage(incomingMessage);
         }
       }
-      //Save to local storage
-      localStorage.setItem("messages", JSON.stringify(messageContext.messages));
     } catch (error) {
       setIsModalOpen(true);
       setLoadingState(false);

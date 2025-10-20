@@ -17,15 +17,15 @@ const Conversation = () => {
   );
   const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
 
-  useEffect(() => {
-    const messageHistory = localStorage.getItem("messages");
-    const setMessages = messageContext?.setMessages;
+  // useEffect(() => {
+  //   const messageHistory = localStorage.getItem("messages");
+  //   const setMessages = messageContext?.setMessages;
 
-    if (messageHistory) {
-      if (!setMessages) return;
-      setMessages(JSON.parse(messageHistory));
-    }
-  }, []);
+  //   if (messageHistory) {
+  //     if (!setMessages) return;
+  //     setMessages(JSON.parse(messageHistory));
+  //   }
+  // }, []);
 
   //Check if context is provided
   if (!messageContext) {
@@ -43,6 +43,7 @@ const Conversation = () => {
   const { loadingState } = loadingContext || {};
   const { incomingMessage } = incomingMessageContext || {};
   const { messages } = messageContext;
+
   return (
     <div className="mt-10">
       {messages.map((message, index) => (
