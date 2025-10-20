@@ -14,7 +14,7 @@ const ContentContainer = () => {
   }
 
   return (
-    <div className="flex-9 w-5/6">
+    <div className="flex-9 w-5/6 max-h-9/10 overflow-y-scroll no-scrollbar">
       {messageContext.messages.length > 0 ? (
         <Conversation />
       ) : (

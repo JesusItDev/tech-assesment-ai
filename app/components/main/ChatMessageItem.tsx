@@ -3,9 +3,10 @@ import { ChatMessage } from "../../utils/interfaces";
 
 const ChatMessageItem = ({ message }: { message: ChatMessage }) => {
   return (
-    <div>
-      <h3>{message.role}</h3>
-      <p>{message.content}</p>
+    <div
+      className={`p-3 w-fit rounded-2xl mb-1 ${message.role === "user" ? "bg-primary max-w-4/5 self-end" : "bg-bg-light max-w-4/5"}`}
+    >
+      <p className="user-message-text">{message.content}</p>
     </div>
   );
 };

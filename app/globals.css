@@ -86,6 +86,13 @@ button {
   }
 }
 
+.user-message-text {
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: var(--font-roboto);
+}
+
 /* Loading Animation */
 .three-body {
   --uib-size: 35px;
