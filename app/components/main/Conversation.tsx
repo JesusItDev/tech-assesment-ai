@@ -1,4 +1,4 @@
-import { useContext, memo } from "react";
+import { useContext, useEffect, memo } from "react";
 import { MessageContext } from "../../context/MessageContext";
 import { IncomingMessageContext } from "../../context/IncomingMessageContext";
 import { LoadingContext } from "../../context/LoadingContext";
@@ -16,6 +16,16 @@ const Conversation = () => {
     IncomingMessageContext
   );
   const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
+
+  useEffect(() => {
+    const messageHistory = localStorage.getItem("messages");
+    const setMessages = messageContext?.setMessages;
+
+    if (messageHistory) {
+      if (!setMessages) return;
+      setMessages(JSON.parse(messageHistory));
+    }
+  }, []);
 
   //Check if context is provided
   if (!messageContext) {
