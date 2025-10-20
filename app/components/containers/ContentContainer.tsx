@@ -1,25 +1,30 @@
+"use client";
 import WelcomeMessage from "../main/WelcomeMessage";
 import Conversation from "../main/Conversation";
-import { useContext } from "react";
+import { memo, useContext } from "react";
 import { MessageContext } from "../../context/MessageContext";
-import { MessageContextType } from "../../utils/interfaces";
-import { memo } from "react";
+import Loading from "../main/Loading";
 
 const ContentContainer = () => {
-  const messageContext = useContext<MessageContextType | null>(MessageContext);
+  const messageContext = useContext(MessageContext);
 
-  //Check if context is provided
   if (!messageContext) {
     return <div>Context not provided</div>;
   }
 
+  const { hydrated, messages } = messageContext;
+
+  if (!hydrated) {
+    return (
+      <div className="flex-9 w-5/6 flex items-center justify-center">
+        <Loading />
+      </div>
+    );
+  }
+
   return (
     <div className="flex-9 w-5/6 max-h-9/10 overflow-y-scroll no-scrollbar">
-      {messageContext.messages.length > 0 ? (
-        <Conversation />
-      ) : (
-        <WelcomeMessage />
-      )}
+      {hydrated && messages.length > 0 ? <Conversation /> : <WelcomeMessage />}
     </div>
   );
 };

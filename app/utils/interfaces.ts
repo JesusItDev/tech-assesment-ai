@@ -6,6 +6,7 @@ export type ChatMessage = {
 export interface MessageContextType {
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
+  hydrated: boolean;
 }
 
 export interface IncomingMessageContextType {
