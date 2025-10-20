@@ -13,11 +13,15 @@ const ContentContainer = () => {
     return <div>Context not provided</div>;
   }
 
+  console.log("MSG: ", messageContext);
+
   return (
     <div className="flex-9 w-5/6">
-      {messageContext.messages.length === 0 && <WelcomeMessage />}
-
-      <Conversation />
+      {messageContext.messages.length > 0 ? (
+        <Conversation />
+      ) : (
+        <WelcomeMessage />
+      )}
     </div>
   );
 };

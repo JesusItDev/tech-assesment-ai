@@ -99,6 +99,7 @@ const UserInput = () => {
 
   const handleClear = () => {
     localStorage.clear();
+    setMessages([]);
   };
 
   return (
