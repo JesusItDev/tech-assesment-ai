@@ -22,9 +22,19 @@ Finally run the project with the following command
 npm run dev
 ```
 
-This is a Barebones version. See next section for a repo with more functionality and also an already deployed updated version
+This is a prototype version. See next section for a repo with more functionalities and also an already deployed updated version
+
+Features for this version:
+* Fetching from OpenAI
+* Simple chat functionality (No conversation context)
+* Displaying texts dynamically
+* Error handling and loading states
+* Local Storage for chat history
+* Responsive Design
+* Next API proxy endpoint for API KEY security
+* Submit and Clear buttons
 
 ## Polished Version
 
-Repository: 
+Repository: https://github.com/JesusItDev/Updated-Tech-Assesment
 Link: https://chat-bot-open-ai-gamma.vercel.app/
