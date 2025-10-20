@@ -107,6 +107,14 @@ const UserInput = () => {
     setMessages([]);
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Enter") {
+      handleSubmit(event);
+      // Perform actions like submitting a form or sending a message
+      // event.preventDefault(); // Prevent default form submission if inside a form
+    }
+  };
+
   return (
     <form
       className="flex flex-1 w-5/6 items-center justify-center gap-3 mb-3"
@@ -117,6 +125,7 @@ const UserInput = () => {
         className="bg-bg-light rounded-xl field-sizing-content max-h-40 w-4/5 p-2 overflow-y-scroll no-scrollbar "
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
       <button
         className={`p-2 bg-primary w-1/12 rounded-xl ${loadingState && "opacity-50"} `}
