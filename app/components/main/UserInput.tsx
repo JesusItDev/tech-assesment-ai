@@ -20,58 +20,113 @@ const UserInput = () => {
     }
   }, [messages]);
 
-  const handleSubmit = async (
-    event?: React.FormEvent | React.KeyboardEvent
-  ) => {
-    event?.preventDefault();
+  // const handleSubmit = async (
+  //   event?: React.FormEvent | React.KeyboardEvent
+  // ) => {
+  //   event?.preventDefault();
 
-    //Return early if no input or if loading
-    if (!prompt.trim() || loadingState) return;
+  //   //Return early if no input or if loading
+  //   if (!prompt.trim() || loadingState) return;
+
+  //   setLoadingState(true);
+
+  //   //Add user message and clear input
+  //   setMessages((prev) => [...prev, { role: "user", content: prompt }]);
+  //   setPrompt("");
+
+  //   try {
+  //     const response = await fetch("/api/chat", {
+  //       method: "POST",
+  //       body: JSON.stringify({ prompt }),
+  //     });
+
+  //     if (!response.body) throw new Error("No response body");
+
+  //     const reader = response.body
+  //       .pipeThrough(new TextDecoderStream())
+  //       .getReader();
+
+  //     let incomingMessage = "";
+
+  //     //Stream response
+  //     while (true) {
+  //       const { done, value } = await reader.read();
+  //       if (done) break;
+
+  //       incomingMessage += value;
+  //       setIncomingMessage(incomingMessage);
+  //     }
+
+  //     //Add assistant message
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       { role: "assistant", content: incomingMessage },
+  //     ]);
+
+  //     setIncomingMessage("");
+  //   } catch (err) {
+  //     console.error(err);
+  //     setIsModalOpen(true);
+  //   } finally {
+  //     setLoadingState(false);
+  //   }
+  // };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (prompt.trim() === "") return;
 
     setLoadingState(true);
 
-    //Add user message and clear input
-    setMessages((prev) => [...prev, { role: "user", content: prompt }]);
+    setMessages((prevState) => [
+      ...prevState,
+      { role: "user", content: prompt },
+    ]);
+
     setPrompt("");
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch("../../api/chat", {
         method: "POST",
         body: JSON.stringify({ prompt }),
       });
 
-      if (!response.body) throw new Error("No response body");
+      if (!response.body) return;
 
       const reader = response.body
         .pipeThrough(new TextDecoderStream())
         .getReader();
 
+      if (reader) setLoadingState(false);
+
       let incomingMessage = "";
 
-      //Stream response
       while (true) {
         const { done, value } = await reader.read();
-        if (done) break;
 
-        incomingMessage += value;
-        setIncomingMessage(incomingMessage);
+        if (done) {
+          setMessages((prevState) => [
+            ...prevState,
+            { role: "assistant", content: incomingMessage },
+          ]);
+
+          setIncomingMessage("");
+
+          break;
+        }
+
+        if (value) {
+          incomingMessage += value;
+
+          setIncomingMessage(incomingMessage);
+        }
       }
-
-      //Add assistant message
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: incomingMessage },
-      ]);
-
-      setIncomingMessage("");
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
       setIsModalOpen(true);
-    } finally {
       setLoadingState(false);
+      console.error(error);
     }
   };
-
   const handleClear = () => {
     localStorage.removeItem("messages");
     setMessages([]);
