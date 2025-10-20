@@ -1,17 +1,12 @@
 "use client";
 import WelcomeMessage from "../main/WelcomeMessage";
 import Conversation from "../main/Conversation";
-import { memo, useContext } from "react";
-import { MessageContext } from "../../context/MessageContext";
 import Loading from "../main/Loading";
+import { memo } from "react";
+import { useChatContexts } from "@/app/customHooks/useChatContext";
 
 const ContentContainer = () => {
-  const messageContext = useContext(MessageContext);
-
-  if (!messageContext) {
-    return <div>Context not provided</div>;
-  }
-
+  const { messageContext } = useChatContexts();
   const { hydrated, messages } = messageContext;
 
   if (!hydrated) {
