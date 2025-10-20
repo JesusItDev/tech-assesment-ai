@@ -1,114 +1,85 @@
 "use client";
 import { useState, memo, useEffect } from "react";
-import { useContext } from "react";
-import { MessageContext } from "../../context/MessageContext";
-import { IncomingMessageContext } from "../../context/IncomingMessageContext";
-import { LoadingContext } from "../../context/LoadingContext";
-import {
-  MessageContextType,
-  IncomingMessageContextType,
-  LoadingContextType,
-} from "../../utils/interfaces";
-import ErrorModal from "./ErrorModal";
+import { useChatContexts } from "@/app/customHooks/useChatContext";
+import { IconSend, IconClear } from "@/app/assets/Icons";
+import ErrorModal from "../general/ErrorModal";
 
 const UserInput = () => {
+  const [prompt, setPrompt] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { messageContext, incomingMessageContext, loadingContext } =
+    useChatContexts();
 
-  const [prompt, setPrompt] = useState<string>("");
-
-  const messageContext = useContext<MessageContextType | null>(MessageContext);
-  const incomingMessageContext = useContext<IncomingMessageContextType | null>(
-    IncomingMessageContext
-  );
-  const loadingContext = useContext<LoadingContextType | null>(LoadingContext);
+  const { messages, setMessages } = messageContext;
+  const { setIncomingMessage } = incomingMessageContext;
+  const { loadingState, setLoadingState } = loadingContext;
 
   useEffect(() => {
-    if (messageContext?.messages.length) {
-      console.log("before save", localStorage.getItem("messages"));
-      localStorage.setItem("messages", JSON.stringify(messageContext.messages));
-      console.log("after save", localStorage.getItem("messages"));
+    if (messages.length) {
+      localStorage.setItem("messages", JSON.stringify(messages));
     }
-  }, [messageContext?.messages]);
-  //Check if context is provided
-  if (!messageContext) {
-    return <div>Context not provided</div>;
-  }
+  }, [messages]);
 
-  if (!incomingMessageContext) {
-    return <div>Context not provided</div>;
-  }
+  const handleSubmit = async (
+    event?: React.FormEvent | React.KeyboardEvent
+  ) => {
+    event?.preventDefault();
 
-  if (!loadingContext) {
-    return <div>Context not provided</div>;
-  }
-
-  const { setMessages } = messageContext;
-  const { setIncomingMessage } = incomingMessageContext || {};
-  const { loadingState, setLoadingState } = loadingContext || {};
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (prompt.trim() === "") return;
+    //Return early if no input or if loading
+    if (!prompt.trim() || loadingState) return;
 
     setLoadingState(true);
 
-    setMessages((prevState) => [
-      ...prevState,
-      { role: "user", content: prompt },
-    ]);
-
+    //Add user message and clear input
+    setMessages((prev) => [...prev, { role: "user", content: prompt }]);
     setPrompt("");
 
     try {
-      const response = await fetch("../../api/chat", {
+      const response = await fetch("/api/chat", {
         method: "POST",
         body: JSON.stringify({ prompt }),
       });
 
-      if (!response.body) return;
+      if (!response.body) throw new Error("No response body");
 
       const reader = response.body
         .pipeThrough(new TextDecoderStream())
         .getReader();
 
-      if (reader) setLoadingState(false);
-
       let incomingMessage = "";
 
+      //Stream response
       while (true) {
         const { done, value } = await reader.read();
+        if (done) break;
 
-        if (done) {
-          setMessages((prevState) => [
-            ...prevState,
-            { role: "assistant", content: incomingMessage },
-          ]);
-
-          setIncomingMessage("");
-
-          break;
-        }
-
-        if (value) {
-          incomingMessage += value;
-
-          setIncomingMessage(incomingMessage);
-        }
+        incomingMessage += value;
+        setIncomingMessage(incomingMessage);
       }
-    } catch (error) {
+
+      //Add assistant message
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: incomingMessage },
+      ]);
+
+      setIncomingMessage("");
+    } catch (err) {
+      console.error(err);
       setIsModalOpen(true);
+    } finally {
       setLoadingState(false);
-      console.error(error);
     }
   };
 
   const handleClear = () => {
-    localStorage.clear();
+    localStorage.removeItem("messages");
     setMessages([]);
   };
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "Enter") {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter" && !event.shiftKey) {
+      event.preventDefault();
       handleSubmit(event);
     }
   };
@@ -120,49 +91,36 @@ const UserInput = () => {
     >
       <textarea
         placeholder="Input a prompt..."
-        className="bg-bg-light rounded-xl field-sizing-content max-h-40 w-4/5 p-2 overflow-y-scroll no-scrollbar "
+        className=" bg-bg-light rounded-xl field-sizing-content max-h-40 w-4/5 p-2 overflow-y-scroll no-scrollbar resize-none"
         value={prompt}
         onChange={(e) => setPrompt(e.target.value)}
         onKeyDown={handleKeyDown}
+        disabled={loadingState}
       />
+
       <button
-        className={`p-2 bg-primary w-1/12 rounded-xl flex items-center justify-center ${loadingState && "opacity-50"} `}
         type="submit"
+        className={`button-base bg-primary ${
+          loadingState ? "opacity-50 cursor-not-allowed" : ""
+        }`}
         disabled={loadingState}
       >
-        <span className="hidden lg:inline"> Submit</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          className="w-5 h-5 lg:hidden rotate-180"
-        >
-          <path d="M3 12l18-9-8 9 8 9z" />
-        </svg>
+        <span className="hidden lg:inline">Submit</span>
+        <IconSend />
       </button>
+
       <button
-        className="p-2 bg-warning w-1/12 rounded-xl flex items-center justify-center"
-        onClick={() => handleClear()}
+        type="button"
+        className={`button-base bg-warning`}
+        onClick={handleClear}
       >
-        <span className="hidden lg:inline"> Clear</span>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-5 h-5 lg:hidden"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18L18 6M6 6l12 12"
-          />
-        </svg>
+        <span className="hidden lg:inline">Clear</span>
+        <IconClear />
       </button>
+
       <ErrorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <h3>An error as occurred</h3>
-        <p>Plese try to re enter your prompt.</p>
+        <h3>An error has occurred</h3>
+        <p>Please try submitting your prompt again.</p>
       </ErrorModal>
     </form>
   );

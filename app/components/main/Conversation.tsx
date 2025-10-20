@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { useChatContexts } from "@/app/customHooks/useChatContext";
-import Loading from "./Loading";
+import Loading from "../general/Loading";
 import ChatMessageItem from "./ChatMessageItem";
 import ChatIncomingMessageItem from "./ChatIncomingMessageItem";
 

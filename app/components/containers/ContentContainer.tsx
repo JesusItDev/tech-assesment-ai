@@ -1,7 +1,7 @@
 "use client";
 import WelcomeMessage from "../main/WelcomeMessage";
 import Conversation from "../main/Conversation";
-import Loading from "../main/Loading";
+import Loading from "../general/Loading";
 import { memo } from "react";
 import { useChatContexts } from "@/app/customHooks/useChatContext";
 

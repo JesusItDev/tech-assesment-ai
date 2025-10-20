@@ -93,6 +93,16 @@ button {
   font-family: var(--font-roboto);
 }
 
+.button-base {
+  padding: calc(var(--spacing) * 2);
+  width: 1/10;
+  border-radius: var(--radius-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.2s ease-in-out;
+}
+
 /* Fade-In Animation */
 @theme {
   --animate-fadeInUp: fadeInUp 0.5s ease-out;

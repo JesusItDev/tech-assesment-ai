@@ -7,7 +7,7 @@ import {
   IncomingMessageContextType,
   LoadingContextType,
 } from "../utils/interfaces";
-import ErrorModal from "../components/main/ErrorModal";
+import ErrorModal from "../components/general/ErrorModal";
 
 export const useChatContexts = (): {
   messageContext: MessageContextType;
