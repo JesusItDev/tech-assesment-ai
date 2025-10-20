@@ -110,8 +110,6 @@ const UserInput = () => {
   const handleKeyDown = (event: React.KeyboardEvent) => {
     if (event.key === "Enter") {
       handleSubmit(event);
-      // Perform actions like submitting a form or sending a message
-      // event.preventDefault(); // Prevent default form submission if inside a form
     }
   };
 
@@ -128,17 +126,39 @@ const UserInput = () => {
         onKeyDown={handleKeyDown}
       />
       <button
-        className={`p-2 bg-primary w-1/12 rounded-xl ${loadingState && "opacity-50"} `}
+        className={`p-2 bg-primary w-1/12 rounded-xl flex items-center justify-center ${loadingState && "opacity-50"} `}
         type="submit"
         disabled={loadingState}
       >
-        Submit
+        <span className="hidden lg:inline"> Submit</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          className="w-5 h-5 lg:hidden rotate-180"
+        >
+          <path d="M3 12l18-9-8 9 8 9z" />
+        </svg>
       </button>
       <button
-        className="p-2 bg-warning w-1/12 rounded-xl"
+        className="p-2 bg-warning w-1/12 rounded-xl flex items-center justify-center"
         onClick={() => handleClear()}
       >
-        Clear
+        <span className="hidden lg:inline"> Clear</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-5 h-5 lg:hidden"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
       </button>
       <ErrorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <h3>An error as occurred</h3>
