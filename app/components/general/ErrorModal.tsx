@@ -8,11 +8,12 @@ const ErrorModal = ({
   children: React.ReactNode;
 }) => {
   if (!isOpen) return null;
+
   return (
     <div className="modal-overlay " onClick={onClose}>
       <div className="modal-content bg-bg" onClick={(e) => e.stopPropagation()}>
         <button className="modal-close-button" onClick={onClose}>
-          <h6 className="text-warning">&times;</h6>
+          <span className="text-warning">&times;</span>
         </button>
         {children}
       </div>
