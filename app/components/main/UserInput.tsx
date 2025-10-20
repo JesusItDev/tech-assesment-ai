@@ -88,11 +88,17 @@ const UserInput = () => {
           setIncomingMessage(incomingMessage);
         }
       }
+      //Save to local storage
+      localStorage.setItem("messages", JSON.stringify(messageContext.messages));
     } catch (error) {
       setIsModalOpen(true);
       setLoadingState(false);
       console.error(error);
     }
+  };
+
+  const handleClear = () => {
+    localStorage.clear();
   };
 
   return (
@@ -115,7 +121,7 @@ const UserInput = () => {
       </button>
       <button
         className="p-2 bg-warning w-1/12 rounded-xl"
-        onClick={() => setIsModalOpen(true)}
+        onClick={() => handleClear()}
       >
         Clear
       </button>
